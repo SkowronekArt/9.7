@@ -1,6 +1,8 @@
 var newGameBtn = document.getElementById('js-newGameButton');
+var nextGameBtn = document.getElementById('js-nextGameButton');
 
 newGameBtn.addEventListener('click', newGame);
+nextGameBtn.addEventListener('click', nextGame);
 
 var pickRock = document.getElementById('js-playerPick_rock'),
     pickPaper = document.getElementById('js-playerPick_paper'),
@@ -29,22 +31,39 @@ var gameState = 'notStarted', //started // ended
 
 var newGameElem = document.getElementById('js-newGameElement'),
     pickElem = document.getElementById('js-playerPickElement'),
-    resultsElem = document.getElementById('js-resultsTableElement');
+    resultsElem = document.getElementById('js-resultsTableElement'),
+    nextGameElem = document.getElementById('js-nextGameElement'),
+    nextGameBtn = document.getElementById('js-nextGameButton'),
+    whoWasTheWinner= document.getElementById('js-whoWasTheWinner');
+    
 
 function setGameElements() {
     switch (gameState) {
         case 'started':
             newGameElem.style.display = 'none';
+            nextGameElem.style.display = 'none';
+            nextGameBtn.style.display = 'none';
             pickElem.style.display = 'block';
             resultsElem.style.display = 'block';
+            whoWasTheWinner.style.display = "none";
             break;
         case 'ended':
-            newGameBtn.innerText = 'Jeszcze raz';
+            newGameElem.style.display = 'none';
+            nextGameElem.style.display = 'block';
+            nextGameBtn.style.display = 'block';
+            pickElem.style.display = 'none';
+            resultsElem.style.display = 'block';
+            whoWasTheWinner.style.display = "block";
+            break;
         case 'notStarted':
         default:
             newGameElem.style.display = 'block';
+            nextGameElem.style.display = 'none';
+            nextGameBtn.style.display = 'none';
             pickElem.style.display = 'none';
             resultsElem.style.display = 'none';
+            whoWasTheWinner.style.display = "none";
+     
     }
 }
 setGameElements();
@@ -55,23 +74,19 @@ var playerPointsElem = document.getElementById('js-playerPoints'),
     computerPointsElem = document.getElementById('js-computerPoints');
 
 
+
 function newGame() {
-    player.name = prompt('Please enter your name', 'imię gracza');
+    player.name = prompt('Twoje imię', 'TY');
     if (player.name) {
         player.score = computer.score = 0;
         gameState = 'started';
         setGameElements();
 
         playerNameElem.innerHTML = player.name;
-        // setGamePoints(); // This function has not been created yet
     }
 
 }
 
-
-function playerPick(playerPick) {
-    console.log(playerPick);
-}
 
 var x = Math.random();
 
@@ -118,6 +133,37 @@ function checkRoundWinner(playerPick, computerPick) {
         computer.score++;
     }
 
+    console.log("komputer linia 125: " + computer.score);
+    console.log("gracz linia 126: " + player.score);
+
+    writeResults()
+}
+
+
+function writeResults() {
+    playerPointsElem.innerHTML = player.score;
+    computerPointsElem.innerHTML = computer.score;
+
+    endOfGame()
+}
+
+
+
+function endOfGame(playerPoints, computerPoints) {
+
+    if ((player.score == 3) || (computer.score == 3)) {
+        whoWasTheWinner.innerHTML = "";
+
+
+
+
+        if (computer.score > player.score) {
+            whoWasTheWinner.innerHTML = "<div class='row text-center'><button class='btn'>komp wygrał</button></div>";
+        } else {
+            whoWasTheWinner.innerHTML = "<div class='row text-center'><button class='btn'>" + player.name + " wygrał/a</button></div>";
+        }
+        nextGame();
+    }
 }
 
 
@@ -128,10 +174,15 @@ function playerPick(playerPick) {
     computerPickElem.innerHTML = computerPick;
 
     checkRoundWinner(playerPick, computerPick);
+
 }
 
 
-function setGamePoints() {
-    playerPointsElem.innerHTML = player.score;
-    computerPointsElem.innerHTML = computer.score;
+function nextGame() {
+
+
+    gameState = 'ended';
+    setGameElements();
+    nextGameBtn.innerHTML = "Jeszcze raz";
+    nextGameBtn.addEventListener('click', newGame);
 }
