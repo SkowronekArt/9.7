@@ -81,16 +81,12 @@ function newGame() {
         player.score = computer.score = 0;
         gameState = 'started';
         setGameElements();
-
         playerNameElem.innerHTML = player.name;
+        playerPointsElem.innerHTML  = "0";
+        computerPointsElem.innerHTML  = "0";
     }
 
 }
-
-
-var x = Math.random();
-
-Math.floor(Math.random() * 3)
 
 function getComputerPick() {
     var possiblePicks = ['rock', 'paper', 'scissors'];
